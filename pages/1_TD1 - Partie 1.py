@@ -17,11 +17,6 @@ def load_data():
     df = pd.read_stata('./data/TD1/data.dta')
     df.drop(['countrycode', 'pop'], axis = 1, inplace = True)
     
-    # df['year'] = pd.to_datetime(df['year'], format='%Y')
-    # This doesn't work as %Y expect a 4-digit year...
-    # df['year'] = pd.to_datetime(df['year'].astype('str').str.zfill(4), format='%Y')
-    # Doesn't work either...
-    
     return df
 
 df = load_data()
@@ -68,9 +63,11 @@ plot_GDP_per_capita(df, countries_choice, min_year, max_year)
 st.write("""
 Les pays ont enregistré une augmentation significative de leur PIB par habitant depuis le 20ème siècle.
 
-On peut distinguer deux groupes : les pays développés (les États-Unis, la France et le Japon) et les pays émergents (l'Inde, la Chine, l'Argentine et le Brésil). 
+On peut distinguer deux groupes : les pays développés (les États-Unis, la France et le Japon) et les pays émergents (BRICS) (l'Inde, la Chine, l'Argentine et le Brésil). 
 
-Il semble que l'écart relatif entre ces deux groupes reste constant dans le temps à partir du 20ème siècle.
+Il semble que l'écart relatif entre ces deux groupes reste constant dans le temps à partir du 20ème siècle. 
+
+On peut néanmoins noter que les pays émérgents semble rattraper leur retard et initier à leur tour une croissance économique.
 """)
 
 # 2. 3. 4. Évolution du PIB pour la France et les États-Unis
@@ -106,37 +103,58 @@ def plot_GDPPC_growth(df, min_year, max_year):
 plot_GDPPC_growth(df, min_year, max_year)
 
 st.write("""
-Les pays ont enregistré une augmentation significative de leur PIB par habitant depuis le 20ème siècle.
+On observe une amplitude importante des fluctuations, notamment très importante lors de la 1ère et 2nde guerre mondiale.
 
-On peut distinguer deux groupes : les pays développés (les États-Unis, la France et le Japon) et les pays émergents (l'Inde, la Chine, l'Argentine et le Brésil). 
+Cette amplitude semble diminuer dans le temps.
 
-Il semble que l'écart relatif entre ces deux groupes reste constant dans le temps à partir du 20ème siècle.         
-"""
+Plusieurs raisons peuvent expliquer cette diminution de l'amplitude :
+
+- des politiques économiques plus efficace 
+- intervention plus importante des politiques budgétaires et monétaires
+""")
+
+
+st.write("### 3. 4. Métriques sur le PIB par tête pour diverses périodes")
+
+period = st.selectbox(
+    label = 'Period',
+    options = [(1820, 2018), (1820, 1939), (1950, 2018), (1980, 2018)],
+    format_func=lambda x: f'{x[0]} - {x[1]}'
 )
 
-# 3. Taux de croissance annuel moyen et écart type 
+def show_metric(df, period, country):
+    min_year, max_year = period
+    df = df[(df.year >= min_year) & (df.year <= max_year)]
+    df = df[df.country == country]
+    
+    # GDP GACR    
+    period_length = max_year - min_year
+    
+    min_gdppc = df.loc[df.year == min_year, 'gdppc'].iloc[0]
+    max_gdppc = df.loc[df.year == max_year, 'gdppc'].iloc[0]
+    GACR = ((max_gdppc / min_gdppc) ** (1 / period_length) - 1) * 100
+    
+    # Standard deviation of GDP growth rate
+    deviation = df['gdppc_rate'].std()
+    
+    # Number of negative GDP growth
+    neg_growth = df[df['gdppc_rate'] < 0].groupby('country')['gdppc_rate'].count()
+    neg_growth = neg_growth.iloc[0]
+    
+    col1, col2, col3 = st.columns(3)
+    
+    col1.metric("TCAM", f"{GACR:.2f} %")
+    col2.metric("Déviation std.", f"{deviation:.2f}")
+    col3.metric("Nombre d'année de croissance négative", f"{neg_growth:.0f} / {period_length}")
 
-st.write("### 3. TCAM et écart type de la croissance annuelle du PIB par tête")
 
-st.info(f"""
-        **Average annual growth of GDP per capita between {min_year} and {max_year} :**
-- France : {df[df['country'] == 'France']['gdppc_rate'].mean():.2f} %
-- United States : {df[df['country'] == 'United States']['gdppc_rate'].mean():.2f} %
-""")
+st.write("#### France")
 
-st.info(f"""
-        **Standard deviation of annual growth of GDP per capita between {min_year} and {max_year} :**
-- France : {df[df['country'] == 'France']['gdppc_rate'].std():.2f} %
-- United States : {df[df['country'] == 'United States']['gdppc_rate'].std():.2f} %
-""")
+show_metric(df, period, 'France')
 
-# 4. Nombre de croissance annuelle négative du PIB par tête
-st.write("### 4. Nombre de croissance annuelle négative du PIB par tête")
-st.info(f"""
-        **Number of negative annual growth of GDP per capita between {min_year} and {max_year} :**
-- France : {df[df['country'] == 'France']['gdppc_rate'].lt(0).sum()}
-- United States : {df[df['country'] == 'United States']['gdppc_rate'].lt(0).sum()}
-""")
+st.write("#### États-Unis")
+
+show_metric(df, period, 'United States')
 
 # 5. 6. Filtre HP
 df3 = df.copy(deep=True)
