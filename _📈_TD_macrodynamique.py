@@ -22,7 +22,7 @@ st.markdown("""
 ### Note sur le rendu :
 > Je vous propose le rendu de mes TD au format d'une web-app Streamlit. 
 >
-> L'ensemble du code de cette web-app est disponible sur GitHub ici.
+> L'ensemble du code de cette web-app est disponible sur GitHub [ici](https://github.com/mathisdrn/TD_macrodynamique).
 >
 > Si vous souhaitez pouvoir exécuter ou modifier mon notebook un fichier requirements.txt est fourni. Il vous suffit d'exécuter la commande suivante :
 > ```pip install -r requirements.txt```
