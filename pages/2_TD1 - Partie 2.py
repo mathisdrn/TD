@@ -224,7 +224,9 @@ Rapportée au % du PIB elle exprime la part de l'investissement dans l'économie
 
 À partir de 2010, il semble se dégager une hiérarchie dans la part des dépenses de l'investissement des pays :
 
-Dans l'ordre décroissant : France, (Allemagne, Zone Euro, États-Unis), Royaume-Uni, Grèce.         
+Dans l'ordre décroissant : France, (Allemagne, Zone Euro, États-Unis), Royaume-Uni, Grèce.
+
+Il semble que l'investissement des entreprises soit plus volatile que la consommation des ménages.        
 """)
 
 # 6. Taux de croissance de la dépense privée et de l’investissement
