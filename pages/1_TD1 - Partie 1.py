@@ -85,6 +85,7 @@ min_year, max_year = st.slider(
     value=(1820, 2018)
 )
 
+@st.cache_data
 def plot_GDPPC_growth(df, min_year, max_year):
     df = df[(df['year'] >= min_year) & (df['year'] <= max_year)]
 
@@ -122,6 +123,7 @@ period = st.selectbox(
     format_func=lambda x: f'{x[0]} - {x[1]}'
 )
 
+@st.cache_data
 def show_metric(df, period, country):
     min_year, max_year = period
     df = df[(df.year >= min_year) & (df.year <= max_year)]
@@ -173,6 +175,7 @@ df3['gdppc_cycle'] = np.concatenate(cycle)
 # 7. Représentation graphique du filtre HP
 st.write("### 7. Représentation graphique du filtre HP")
 
+@st.cache_data
 def plot_HP_filter(df3, country):
     temp = df3.loc[country]
     
@@ -213,6 +216,7 @@ country_choice = st.selectbox(
 
 plot_HP_filter(df3, country_choice)
 
+@st.cache_data
 def plot_HP_filter_reg(country):
     temp = df3.loc[country]
     temp = temp.reset_index(level=0)    
@@ -239,6 +243,7 @@ def plot_HP_filter_reg(country):
     
 plot_HP_filter_reg(country_choice)
 
+@st.cache_data
 def plot5():
     """Plot polynomial regression of trend for France and United States aside"""
     fig, ax = plt.subplots()
