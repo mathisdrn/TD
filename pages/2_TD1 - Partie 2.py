@@ -70,7 +70,8 @@ def plot6(df):
     
 plot6(df)
 
-st.write("Les États-Unis, le Royaume-Uni, la Grèce et la France fournissent un effort budgétaire important (en moyenne moins de 2% entre 2000 et 2023).")
+st.write("Les États-Unis, le Royaume-Uni, la Grèce et la France fournissent un effort budgétaire important (déficit publique primaire en moyenne de 2% entre 2000 et 2023).")
+st.write("On observe une forte augmentation du déficit primaire des administrations publiques lors de la crise du Covid en 2020 et de la crise économique de 2008.")
 
 # 2. Croissance du PIB
 st.write("### 2. Croissance du PIB")
@@ -135,11 +136,12 @@ def plot_comparison(df):
     temp = temp.groupby('Pays')['Value'].mean()
     temp = temp.sort_values(ascending = False)
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True, gridspec_kw={'hspace': 0.4})
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True, gridspec_kw={'hspace': 0.1})
 
     # Barchart of average SFPAP
     sns.barplot(x=temp.index, y=temp.values, ax=ax1)
     ax1.set_title('Average SFPAP between 2000 and 2023')
+    ax1.set_xlabel('')
     ax1.set_ylabel('SFPAP')
     ax1.yaxis.set_major_formatter(mtick.PercentFormatter())
 
